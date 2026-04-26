@@ -46,3 +46,13 @@ bool checkDraw(const char board[]) {
     }
     return true;
 }
+// Returns the 1-based position of the first available spot on the board.
+// Returns 0 if the board is full (no move available).
+int computerMove(const char board[]) {
+    for (int i = 0; i < 9; i++) {
+        if (board[i] != 'X' && board[i] != 'O') {
+            return i + 1;
+        }
+    }
+    return 0;
+}

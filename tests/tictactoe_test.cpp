@@ -35,3 +35,22 @@ TEST_CASE("Win and Draw Conditions") {
         REQUIRE(checkDraw(drawBoard) == true);
     }
 }
+
+TEST_CASE("Computer Move") {
+    SECTION("Takes the first available spot on an empty board") {
+        char board[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        REQUIRE(computerMove(board) == 1);
+    }
+    SECTION("Skips already taken spots") {
+        char board[9] = {'X', 'O', '3', '4', '5', '6', '7', '8', '9'};
+        REQUIRE(computerMove(board) == 3);
+    }
+    SECTION("Takes the last remaining spot") {
+        char board[9] = {'X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', '9'};
+        REQUIRE(computerMove(board) == 9);
+    }
+    SECTION("Returns 0 when the board is full") {
+        char board[9] = {'X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', 'X'};
+        REQUIRE(computerMove(board) == 0);
+    }
+}
