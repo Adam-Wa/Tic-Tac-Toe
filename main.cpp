@@ -45,6 +45,24 @@ int main() {
             }
         }
 
+        // --- Trap Cell Selection ---
+        int trapCell = 0;  // 0 means no trap
+        while (true) {
+            cout << "\nWould you like to enable a secret trap cell (yes/no)?  ";
+            string trapChoice;
+            getline(cin, trapChoice);
+            if (trapChoice == "yes" || trapChoice == "y") {
+                trapCell = setTrapCell();
+                cout << "A trap cell has been secretly placed on the board. Good luck!" << endl;
+                break;
+            } else if (trapChoice == "no" || trapChoice == "n") {
+                trapCell = 0;
+                break;
+            } else {
+                cout << "\nThat is not a valid entry!" << endl;
+            }
+        }
+
         // --- Game Setup ---
         char board[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
         char currentPlayer = 'X';
@@ -64,7 +82,7 @@ int main() {
 
             if (isComputerTurn) {
                 cout << "Computer's turn..." << endl;
-                move = computerMove(board);
+                move = computerMove(board, trapCell);
             } else {
                 while (true) {
                     cout << "What is your move?  ";
@@ -80,6 +98,20 @@ int main() {
                 }
             }
 
+            // --- Trap Cell Check ---
+            // If the move lands on the trap cell, the player loses their turn.
+            // The cell stays unmarked (the board is not updated).
+            if (isTrap(move, trapCell)) {
+                if (isComputerTurn) {
+                    cout << "The computer stepped on the trap! Their turn is lost." << endl;
+                } else {
+                    cout << "You stepped on a trap! Your turn is lost." << endl;
+                }
+                // Switch to the other player without marking the cell
+                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+                continue;
+            }
+
             board[move - 1] = currentPlayer;
 
             if (checkWin(board, currentPlayer)) {
@@ -90,7 +122,7 @@ int main() {
                     cout << "Player " << currentPlayer << " wins!" << endl;
                 }
                 gameActive = false;
-            } else if (checkDraw(board)) {
+            } else if (checkDraw(board, trapCell)) {
                 displayBoard(board);
                 cout << "It's a draw!" << endl;
                 gameActive = false;
